@@ -1,5 +1,5 @@
-import { streamText, type LanguageModel } from "ai";
+import { streamText, type LanguageModel, type ModelMessage } from "ai";
 
-export function chat(model: LanguageModel, instructions: string, prompt: string) {
-    return streamText({ model, instructions, prompt }).textStream;
+export function chat(model: LanguageModel, instructions: string, messages: ModelMessage[]) {
+    return streamText({ model, instructions, messages }).textStream;
 }

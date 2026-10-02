@@ -1,35 +1,7 @@
-import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
-import { streamText, type LanguageModel } from "ai";
+import { createModel, loadLlamaConfig } from "./model/llama";
+import { chat } from "./llm";
 
-export type LlamaConfig = {
-    baseURL: string;
-    modelName: string;
-};
-
-export function createModel(config: LlamaConfig): LanguageModel {
-    const llama = createOpenAICompatible({
-        name: "llama.cpp",
-        baseURL: `${config.baseURL}/v1`,
-    });
-    return llama(config.modelName);
-}
-
-export function chat(model: LanguageModel, instructions: string, prompt: string) {
-    return streamText({ model, instructions, prompt }).textStream;
-}
-
-const baseURL = process.env.LLAMA_URL;
-if (!baseURL) {
-    throw new Error("LLAMA_URL is not set");
-}
-
-const modelName = process.env.LLAMA_MODEL;
-if (!modelName) {
-    throw new Error("LLAMA_MODEL is not set");
-}
-
-const llamaConfig = { baseURL, modelName };
-const model = createModel(llamaConfig);
+const model = createModel(loadLlamaConfig());
 
 process.stdout.write("> ");
 for await (const line of console) {
